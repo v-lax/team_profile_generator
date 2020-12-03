@@ -65,9 +65,46 @@ var questions = [
 const addTeamMember = ()=>{
     inquirer.prompt(questions)
             .then((response)=>{
-                teamMembers.push(response)
+
+                if(response.role==='Manager'){
+                    let managerName = response.name
+                    let managerId = response.memberId
+                    let managerEmail = response.email 
+                    let officeNumber = response.office_number 
+
+                    let manager = new Manager(managerName,managerId,managerEmail,officeNumber)
+                    teamMembers.push(manager)
+                }else if(response.role==='Engineer'){
+                    let engineerName = response.name
+                    let engineerId = response.memberId
+                    let engineerEmail = response.email 
+                    let github = response.github
+                    
+                    let engineer = new Engineer(engineerName,engineerId,engineerEmail,github)
+                    teamMembers.push(engineer)
+
+                }else if(response.role==='Intern'){
+                    let internName = response.name
+                    let internId = response.memberId
+                    let internEmail = response.email 
+                    let school = response.college
+                    
+                    let intern = new Intern(internName,internId,internEmail,school)
+                    teamMembers.push(intern)
+                }
+
                 if(response.add_member_confirm===true){
                     addTeamMember();  
+                }
+                
+                if(response.add_member_confirm===false){
+                   let finalHtml=render(teamMembers)
+                   if(!fs.existsSync(OUTPUT_DIR)){
+                        fs.mkdirSync(OUTPUT_DIR);
+                   }
+                   fs.writeFile(outputPath,finalHtml,(err)=>{
+                    err ? console.log(err):console.log('Hang tight, we are generating the html file for you. Check the output folder for the file :)')
+                   })
                 }
             })
 }
